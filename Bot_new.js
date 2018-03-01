@@ -2,7 +2,7 @@ var BaseBot = require('bot-sdk');
 var Datastore = require('nedb');
 var _ = require('lodash');
 var db = {}
-db.english_speak_new = new Datastore({ filename: 'db/english_speak_new.db', autoload: true });
+db.New_Concept_English2 = new Datastore({ filename: 'db/New_Concept_English2.db', autoload: true });
 
 class Bot_new extends BaseBot {
     constructor(postData) {
@@ -94,7 +94,7 @@ class Bot_new extends BaseBot {
             }
             this.nlu.ask('answer');
             return new Promise(function (resolve, reject) {
-                db.english_speak_new.find({}, (err, docs) => {
+                db.New_Concept_English2.find({}, (err, docs) => {
                     docs = _.shuffle(docs)
                     var q1_a = _.shuffle([docs[0].answer, docs[docs.length - 1].answer, docs[docs.length - 2].answer])
                     var q1_right = getRight(_.indexOf(q1_a, docs[0].answer))
