@@ -1,6 +1,6 @@
 const express = require('express');
 
-const Bot = require('./Bot');
+const Bot_new = require('./Bot_new');
 var app = express();
 app.use('/mp3', express.static('mp3'));
 // 探活请求
@@ -31,7 +31,7 @@ app.post('/', (req, res) => {
       return res.send(JSON.stringify({ status: 1 }));
     }
 
-    var bot = new Bot(requestBody);
+    var bot = new Bot_new(requestBody);
     // 开启签名认证
     // bot.initCertificate(req.headers, req.rawBody).enableVerifyRequestSign();
 
