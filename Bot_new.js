@@ -12,24 +12,19 @@ class Bot_new extends BaseBot {
                 outputSpeech: '您好，欢迎学习新概念英语!'
             };
         });
+
         this.addIntentHandler('New_Concept_English', () => {
             var self = this
-
             var index = self.getSessionAttribute('index')
-
             var answer = this.getSlot('answer')
-
             if (answer) {
+                console.log(answer, '===============================>answer');
                 var qs = self.getSessionAttribute('qs')
-                var score = self.getSessionAttribute('score')
 
                 var outputSpeech = ''
                 var result = ''
                 if (answer == qs[index].right) {
                     console.log('ok');
-                    score++
-                    self.setSessionAttribute('score', score)
-
                     result = `您选择${answer}，恭喜您答对了！<slience time="3s"></slience>`
 
                 } else {
@@ -37,14 +32,13 @@ class Bot_new extends BaseBot {
                     result = `您选择${answer}，抱歉您答错了！ 正确答案是${qs[index].right}.${qs[index].q.answer} 。<slience time="3s"></slience>`
                 }
                 index++
-
                 if (index < 3) {
                     self.setSessionAttribute('index', index)
                     outputSpeech = `
                 <speak>
                 ${result}
                 请听下一题
-                ${q[index].q.question}
+                ${qs[index].q.question}
                 <slience time="5s"></slience>
                 a. <slience time="1s"></slience>${qs[index].a[0]} <slience time="3s"></slience>
                 b. <slience time="1s"></slience>${qs[index].a[1]} <slience time="3s"></slience>
@@ -57,11 +51,9 @@ class Bot_new extends BaseBot {
                         reprompt: 'abc您选哪一个？'
                     }
                 } else {
-
                     outputSpeech = `
                 <speak>
                 ${result}
-                您在本轮总共答对了${score}个曲目！
                 </speak>        
                 `
                     this.clearSessionAttribute()
@@ -70,8 +62,6 @@ class Bot_new extends BaseBot {
                         outputSpeech: outputSpeech,
                     }
                 }
-
-
             }
 
             function getRight(num) {
@@ -120,10 +110,9 @@ class Bot_new extends BaseBot {
                         a: q3_a
                     }
                     var qs = [q1, q2, q3]
-                    console.log(qs);
+                    console.log(qs, '====================================>qs');
                     self.setSessionAttribute('qs', qs)
                     self.setSessionAttribute('index', 0)
-                    self.setSessionAttribute('score', 0)
 
                     resolve({
                         outputSpeech: `
