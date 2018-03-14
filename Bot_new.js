@@ -8,6 +8,7 @@ class Bot_new extends BaseBot {
     constructor(postData) {
         super(postData);
         this.addLaunchHandler(() => {
+            this.waitAnswer()
             return {
                 outputSpeech: '您好，欢迎学习新概念英语!'
             };
@@ -17,14 +18,16 @@ class Bot_new extends BaseBot {
             var self = this
             var index = self.getSessionAttribute('index')
             var answer = this.getSlot('answer')
-            if (answer) {
+            var qs = self.getSessionAttribute('qs')
+            if (answer && qs) {
                 console.log(answer, '===============================>answer');
-                var qs = self.getSessionAttribute('qs')
-
                 var outputSpeech = ''
                 var result = ''
+                var score = self.getSessionAttribute('score')
                 if (answer == qs[index].right) {
                     console.log('ok');
+                    score++
+                    self.setSessionAttribute('score', score)
                     result = `您选择${answer}，恭喜您答对了！<slience time="3s"></slience>`
 
                 } else {
@@ -46,6 +49,7 @@ class Bot_new extends BaseBot {
                 </speak>        
                 `
                     this.nlu.ask('answer');
+                    this.waitAnswer()
                     return {
                         outputSpeech: outputSpeech,
                         reprompt: 'abc您选哪一个？'
@@ -54,6 +58,7 @@ class Bot_new extends BaseBot {
                     outputSpeech = `
                 <speak>
                 ${result}
+                您在本轮总共答对了${score}个！
                 </speak>        
                 `
                     this.clearSessionAttribute()
@@ -113,7 +118,7 @@ class Bot_new extends BaseBot {
                     console.log(qs, '====================================>qs');
                     self.setSessionAttribute('qs', qs)
                     self.setSessionAttribute('index', 0)
-
+                    self.setSessionAttribute('score', 0)
                     resolve({
                         outputSpeech: `
                   <speak>
@@ -130,6 +135,12 @@ class Bot_new extends BaseBot {
 
                 })
             })
+        })
+
+        this.addSessionEndedHandler(() => {
+            return {
+                outputSpeech: '再见'
+            }
         })
     }
 }
